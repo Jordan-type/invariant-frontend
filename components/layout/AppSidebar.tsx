@@ -55,19 +55,30 @@ export default function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-border/60">
-      <SidebarHeader className="px-3 py-3">
-        <div className="flex items-center gap-2">
-          <div className="h-10 w-10 rounded-xl border border-border/60 bg-background/60 flex items-center justify-center">
-            <Layers className="h-4 w-4" />
-          </div>
-          <div className="min-w-0 leading-tight">
-            <div className="font-semibold tracking-tight">Invariant</div>
-            <div className="text-xs text-muted-foreground truncate">
-              Hook-native AI liquidity
-            </div>
-          </div>
+<SidebarHeader className={cn("px-3 py-3", collapsed && "px-2")}>
+  <Link
+    href="/dashboard"
+    className={cn(
+      "flex items-center gap-2",
+      collapsed && "justify-center"
+    )}
+    aria-label="Invariant"
+  >
+    <div className="h-10 w-10 rounded-xl border border-border/60 bg-background/60 flex items-center justify-center shrink-0">
+      <Layers className="h-4 w-4" />
+    </div>
+
+    {!collapsed ? (
+      <div className="min-w-0 leading-tight">
+        <div className="font-semibold tracking-tight">Invariant</div>
+        <div className="text-xs text-muted-foreground truncate">
+          Hook-native AI liquidity
         </div>
-      </SidebarHeader>
+      </div>
+    ) : null}
+  </Link>
+</SidebarHeader>
+
 
       <SidebarContent className="px-2">
         {/* navigation main */}

@@ -116,19 +116,30 @@ export const TOKENS: Record<ChainKey, Token[]> = {
       logoURI: "https://assets.coingecko.com/coins/images/279/standard/ethereum.png",
       color: "#94a3b8", // slate
     },
-
     {
       id: "base:USDC",
       symbol: "USDC",
       name: "USD Coin",
       decimals: 6,
       addresses: {
-        base: "0x0000000000000000000000000000000000000000" as `0x${string}`, // <-- replace with real base USDC
+        base: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as `0x${string}`, // <-- replace with real base USDC
       },
       coingeckoId: "usd-coin",
       logoURI: "https://assets.coingecko.com/coins/images/6319/standard/usdc.png",
       color: "#2563eb", // indigo
     },
+    {
+      id: "base:USDT",
+      symbol: "USDT",
+      name: "Tether",
+      decimals: 6,
+      addresses: {
+        base: "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2" as `0x${string}`, // <-- replace with real base USDT
+      },
+      coingeckoId: "tether",
+      logoURI: "https://assets.coingecko.com/coins/images/325/standard/Tether.png",
+      color: "#F5B7B1", // light red
+    }
   ],
 };
 
