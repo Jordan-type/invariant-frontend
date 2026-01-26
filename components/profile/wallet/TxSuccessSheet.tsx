@@ -69,16 +69,21 @@ export function TxSuccessSheet({
                 </a>
               </Button>
             ) : null}
-
-            <div className="flex gap-2">
+            
+            <div className="space-y-2">
               <Button className="w-full" onClick={onClose}>
                 Done
               </Button>
-              {onRepeat ? (
-                <Button variant="outline" className="w-full" onClick={onRepeat}>
+              
+              {onRepeat && (
+                <Button
+                  variant="ghost"
+                  className="w-full text-muted-foreground hover:text-foreground"
+                  onClick={onRepeat}
+                >
                   Repeat send
                 </Button>
-              ) : null}
+              )}
             </div>
           </div>
         </div>

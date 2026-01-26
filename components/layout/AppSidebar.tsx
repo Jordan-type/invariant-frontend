@@ -50,7 +50,8 @@ function isActive(pathname: string, href: string) {
 
 export default function AppSidebar() {
   const pathname = usePathname() ?? "/";
-  const { setOpenMobile } = useSidebar();
+  const { setOpenMobile, state } = useSidebar();
+  const collapsed = state === "collapsed";
 
   return (
     <Sidebar collapsible="icon" className="border-border/60">
@@ -99,22 +100,43 @@ export default function AppSidebar() {
         </SidebarMenu>
       </SidebarContent>
 
-      <SidebarFooter className="p-3">
-        <div className="rounded-2xl border border-border/60 bg-card/40 p-4">
-          <div className="text-sm font-semibold">Pro tip</div>
-          <div className="text-xs text-muted-foreground mt-1">
-            Start with Wallet → balances → send/receive.
-          </div>
-
-          <Button
-            variant="outline"
-            className={cn("mt-3 w-full border-border/70 bg-background/60")}
-            asChild
-          >
-            <Link href="/wallet">Open Wallet</Link>
-          </Button>
+<SidebarFooter className="p-3">
+  <div
+    className={cn(
+      "rounded-2xl border border-border/60 bg-card/40 p-4",
+      collapsed && "p-2"
+    )}
+  >
+    {!collapsed ? (
+      <>
+        <div className="text-sm font-semibold">Pro tip</div>
+        <div className="text-xs text-muted-foreground mt-1">
+          Start with Wallet → balances → send/receive.
         </div>
-      </SidebarFooter>
+
+        <Button
+          variant="outline"
+          className="mt-3 w-full border-border/70 bg-background/60"
+          asChild
+        >
+          <Link href="/wallet">Open Wallet</Link>
+        </Button>
+      </>
+    ) : (
+      <Button
+        variant="outline"
+        size="icon"
+        className="h-10 w-10 border-border/70 bg-background/60"
+        asChild
+      >
+        <Link href="/wallet" aria-label="Open Wallet">
+          <Wallet className="h-4 w-4" />
+        </Link>
+      </Button>
+    )}
+  </div>
+</SidebarFooter>
+
 
       <SidebarRail />
     </Sidebar>
