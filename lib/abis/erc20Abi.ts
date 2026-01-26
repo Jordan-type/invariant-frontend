@@ -1,5 +1,9 @@
+import type { Abi } from "viem"
 
-[{
+
+
+export const erc20Abi = [
+    {
     "anonymous": false,
     "inputs": [
         {
@@ -182,4 +186,4 @@
     "stateMutability": "nonpayable",
     "type": "function"
 }
-]
+] as const satisfies Abi
