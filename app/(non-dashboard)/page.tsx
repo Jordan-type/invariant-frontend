@@ -47,7 +47,7 @@ export default function LandingPage() {
             </div>
             <div className="leading-tight">
               <div className="font-semibold">Invariant</div>
-              <div className="text-xs text-muted-foreground">Hook-native DeFi protocol</div>
+              <div className="text-xs text-muted-foreground">Hook-native DeFi protocol Jordan Muthemba</div>
             </div>
           </div>
 
