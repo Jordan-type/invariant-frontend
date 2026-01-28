@@ -30,40 +30,8 @@ const FeatureCard = ({
 
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-background text-foreground">
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
       {/* Subtle background */}
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full blur-3xl opacity-25 bg-[hsl(var(--primary))]" />
-        <div className="absolute top-24 right-[-120px] h-[420px] w-[420px] rounded-full blur-3xl opacity-20 bg-[hsl(var(--secondary))]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(255,255,255,0.06),transparent_55%)]" />
-      </div>
-
-      {/* Top Nav */}
-      <header className="relative z-10">
-        <div className="mx-auto max-w-6xl px-6 py-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl border border-border/70 bg-card/60 backdrop-blur flex items-center justify-center">
-              <span className="font-semibold">∿</span>
-            </div>
-            <div className="leading-tight">
-              <div className="font-semibold">Invariant</div>
-              <div className="text-xs text-muted-foreground">Hook-native DeFi protocol Jordan Muthemba</div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Badge variant="secondary" className="hidden sm:inline-flex">
-              Uniswap v4 hooks
-            </Badge>
-            <Link href="/dashboard">
-              <Button className="gap-2">
-                Open Dashboard <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </header>
-
       {/* Hero */}
       <section className="relative z-10">
         <div className="mx-auto max-w-6xl px-6 pt-10 pb-12">
@@ -88,7 +56,7 @@ export default function LandingPage() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link href="/dashboard">
                   <Button size="lg" className="gap-2">
-                    Launch Dashboard <ArrowRight className="h-4 w-4" />
+                    Launch App <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
                 <Link href="/hooks">
@@ -221,6 +189,6 @@ export default function LandingPage() {
           </footer>
         </div>
       </section>
-    </main>
+    </div>
   );
 }
