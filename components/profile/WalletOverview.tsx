@@ -5,28 +5,50 @@ import { Copy, Wallet } from "lucide-react";
 import { useAccount, useChainId } from "wagmi";
 import { toast } from "sonner";
 
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import TVLGauge from "@/components/charts/TVLGauge";
 import TokensTable from "@/components/tables/TokensTable";
 
 import { WalletSendSheet } from "@/components/profile/wallet/WalletSendSheet";
 import { WalletReceiveSheet } from "@/components/profile/wallet/WalletReceiveSheet";
+import { WalletTxTable } from "@/components/profile/wallet/WalletTxTable"
 
-import type { ChainKey, Token } from "@/types/token-types";
-import { chainKeyFromChainId, getTokens } from "@/lib/protocol/tokens-registry";
-import { cn } from "@/lib/utils";
+import { useTxHistory } from "@/lib/hooks/useTxHistory";
 import { useWalletBalances } from "@/lib/hooks/useWalletBalances";
+import { chainKeyFromChainId, getTokens } from "@/lib/protocol/tokens-registry";
+import type { ChainKey, Token } from "@/types/token-types";
+import type { WalletTxTableFilters } from "@/types/tx-types";
+import { cn } from "@/lib/utils";
+
 
 export default function WalletOverview() {
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
+  
+  const [walletTab, setWalletTab] = useState<"tokens" | "history">("tokens");
+  const [txFilters, setTxFilters] = useState<WalletTxTableFilters>({
+    tab: "all",
+    search: "",
+    token: "all",
+    kind: "all",
+  });
 
-    const chain = useMemo(() => chainKeyFromChainId(chainId), [chainId]);
+  const chain = useMemo(() => chainKeyFromChainId(chainId), [chainId]);
+
+  // txHistory
+  const { rows: txRows, isLoading: txLoading, error: txError, loadMore, hasMore, page } = useTxHistory({
+    chain,
+    address: address as `0x${string}` | undefined,
+    enabled: walletTab === "history" && isConnected,
+    pageSize: 25,
+    refreshMs: 60_000, // 60 seconds (or just remove refreshMs)
+  });
+
 
   // Real tokens per chain from registry
   const chainTokens = useMemo(() => getTokens(chain), [chain]);
@@ -176,9 +198,9 @@ export default function WalletOverview() {
 
               <div className="mt-6 flex items-center justify-center">
                 <TVLGauge
-  segments={breakdown}
-  label={`$${totalUsd.toFixed(2)}`}
-  subtitle="Total Wallet Value"
+                  segments={breakdown}
+                  label={`$${totalUsd.toFixed(2)}`}
+                  subtitle="Total Wallet Value"
                 />
               </div>
 
@@ -225,20 +247,74 @@ export default function WalletOverview() {
         </div>
 
         {/* Tokens table */}
-        <Card className="bg-card/60 backdrop-blur border-border/60">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="font-semibold">Tokens</div>
-              <div className="text-sm text-muted-foreground">
-                {balances.isLoading ? "Loading…" : "Live balances"}
-              </div>
-            </div>
+<Card className="bg-card/60 backdrop-blur border-border/60">
+  <CardContent className="p-6">
+    <Tabs value={walletTab} onValueChange={(v) => setWalletTab(v === "tokens" ? "tokens" : "history")} className="w-full">
+      <div className="flex items-center justify-between gap-3">
+        <div className="font-semibold">Wallet</div>
 
-            <div className="mt-4">
-              <TokensTable tokens={balances.rows} />
+        <TabsList>
+          <TabsTrigger value="tokens">Tokens</TabsTrigger>
+          <TabsTrigger value="history">History</TabsTrigger>
+        </TabsList>
+      </div>
+
+      <div className="mt-4">
+        <TabsContent value="tokens">
+          <div className="flex items-center justify-between mb-3">
+            <div className="font-semibold">Tokens</div>
+            <div className="text-sm text-muted-foreground">
+              {balances.isLoading ? "Loading…" : "Live balances"}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+
+          <TokensTable tokens={balances.rows} />
+        </TabsContent>
+
+        <TabsContent value="history">
+          <div className="flex items-center justify-between mb-3">
+            <div className="font-semibold">Tx History</div>
+            <div className="text-sm text-muted-foreground">
+              {isConnected ? "For connected wallet" : "Connect wallet to load  tx history"}
+            </div>
+          </div>
+
+<WalletTxTable
+  walletAddress={address as `0x${string}` | undefined}
+  rows={txRows}
+  isLoading={txLoading}
+  filters={txFilters}
+  onFiltersChange={setTxFilters}
+  tokensForFilter={chainTokens}
+  explorerTxUrl={(c, h) =>
+    c === "base" ? `https://basescan.org/tx/${h}` : `https://celoscan.io/tx/${h}`
+  }
+/>
+
+<div className="mt-4 flex items-center justify-between">
+  <div className="text-xs text-muted-foreground">
+    Page {page} {hasMore ? "" : "• End of history"}
+  </div>
+
+  <Button
+    variant="outline"
+    disabled={txLoading || !hasMore}
+    onClick={() => loadMore()}
+  >
+    {txLoading ? "Loading…" : "Load older"}
+  </Button>
+</div>
+
+{txError ? (
+  <div className="mt-3 text-sm text-destructive">{txError}</div>
+) : null}
+
+        </TabsContent>
+      </div>
+    </Tabs>
+  </CardContent>
+</Card>
+
       </div>
     </div>
   );
