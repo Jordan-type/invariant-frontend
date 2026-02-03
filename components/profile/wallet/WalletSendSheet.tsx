@@ -51,6 +51,7 @@ export function WalletSendSheet({
   const { formatted: balanceStr, raw: balanceRaw, isLoading: balLoading } = useTokenBalance(token, chain);
   const { send, isPending } = useSendToken(chain);
 
+  const amountRef = React.useRef<HTMLInputElement | null>(null);
   const disabled = isPending || !to.trim() || !amount.trim();
   const canMax = !balLoading && Number(balanceStr) > 0;
 
@@ -110,7 +111,7 @@ const estUsd = React.useMemo(() => {
       </DrawerTrigger>
 
       <DrawerContent className="border-border/60">
-        <div className="mx-auto w-full max-w-xl p-4 pb-8">
+        <div className="mx-auto w-full max-w-xl p-4 pb-8 max-h-[85dvh] overflow-y-auto">
           <DrawerHeader className="px-0">
             <DrawerTitle>Send</DrawerTitle>
           </DrawerHeader>
@@ -143,6 +144,15 @@ const estUsd = React.useMemo(() => {
                   value={to}
                   onChange={(e) => setTo(e.target.value)}
                   className="border-border/70 bg-background/40"
+                  enterKeyHint="next"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      amountRef.current?.focus();
+                      // helps inside webviews
+                      setTimeout(() => amountRef.current?.scrollIntoView({ block: "center" }), 50);
+                    }
+                  }}
                 />
                 <p className="text-xs text-muted-foreground">
                   Make sure the address is on the same network.
@@ -165,14 +175,20 @@ const estUsd = React.useMemo(() => {
                 </div>
                <div className="relative">
                 <Input
+                  ref={amountRef}
                   id="amount"
                   placeholder={`0.00 ${token.symbol}`}
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
+                  enterKeyHint="done"
+                  inputMode="decimal"
                     className={cn(
                       "border-border/70 bg-background/40 pr-16",
                       exceedsBalance && "border-destructive focus-visible:ring-destructive"
                     )}
+                    onFocus={() => {
+                      setTimeout(() => amountRef.current?.scrollIntoView({ block: "center" }), 50);
+                    }}
                 />
                 <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
                  {token.symbol}
